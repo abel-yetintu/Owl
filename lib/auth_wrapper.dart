@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:owl/providers/auth_provider.dart';
-import 'package:owl/ui/pages/auth/email_verification_page.dart';
+import 'package:owl/providers/search_provider.dart';
 import 'package:owl/ui/pages/auth/login_page.dart';
 import 'package:owl/ui/pages/error_page.dart';
 import 'package:owl/ui/pages/loading_page.dart';
@@ -15,9 +15,11 @@ class AuthWrapper extends StatelessWidget {
     AuthProvider auth = context.watch<AuthProvider>();
     if (auth.user == null) {
       return const LoginPage();
-    } else if (!auth.user!.emailVerified) {
-      return const EmailVerificationPage();
-    } else {
+    }
+    //  else if (!auth.user!.emailVerified) {
+    //   return const EmailVerificationPage();
+    // }
+    else {
       if (auth.owlUser == null) {
         return FutureBuilder(
           future: auth.getOwlUser(uid: auth.user!.uid),
@@ -33,7 +35,12 @@ class AuthWrapper extends StatelessWidget {
               );
             } else {
               if (snapshot.data!) {
-                return const MainPage();
+                return MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(create: (context) => SearchProvider()),
+                  ],
+                  child: const MainPage(),
+                );
               } else {
                 return ErrorPage(
                   onPressed: () {
@@ -46,7 +53,12 @@ class AuthWrapper extends StatelessWidget {
           },
         );
       } else {
-        return const MainPage();
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => SearchProvider()),
+          ],
+          child: const MainPage(),
+        );
       }
     }
   }

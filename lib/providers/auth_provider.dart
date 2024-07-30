@@ -40,6 +40,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> signInWithEmailAndPassword({required String email, required String password}) async {
     _loading = true;
+    notifyListeners();
     try {
       final user = await _authService.signInWithEmailAndPassword(email: email, password: password);
       if (user != null) {
@@ -61,6 +62,7 @@ class AuthProvider extends ChangeNotifier {
     required String userName,
   }) async {
     _loading = true;
+    notifyListeners();
     try {
       final isUserNameAvailable = await DatabaseService().isUserNameAvailable(userName: userName);
       if (isUserNameAvailable) {

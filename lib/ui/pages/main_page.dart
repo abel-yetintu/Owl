@@ -1,36 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:owl/models/owl_user.dart';
-import 'package:owl/providers/auth_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:owl/ui/pages/messages_page.dart';
+import 'package:owl/ui/pages/profile_page.dart';
+import 'package:owl/ui/pages/search_page.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  final List<Widget> _pages = const [MessagesPage(), SearchPage(), ProfilePage()];
+  int _selectedIndex = 1;
+
+  @override
   Widget build(BuildContext context) {
-    OwlUser owlUser = context.read<AuthProvider>().owlUser!;
+
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Email: ${owlUser.email}'),
-            SizedBox(height: 6.h),
-            Text('Full Name: ${owlUser.fullName}'),
-            SizedBox(height: 6.h),
-            Text('User Name: ${owlUser.userName}'),
-            SizedBox(height: 6.h),
-            FilledButton(
-              child: const Text(
-                'Log out',
-              ),
-              onPressed: () {
-                Provider.of<AuthProvider>(context, listen: false).signOut();
-              },
-            ),
-          ],
-        ),
+      body: SafeArea(child: _pages[_selectedIndex]),
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        height: 80.h,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (value) {
+          setState(() {
+            _selectedIndex = value;
+          });
+        },
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),
+          NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        ],
       ),
     );
   }

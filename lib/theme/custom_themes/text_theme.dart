@@ -36,13 +36,25 @@ class CustomTextTheme {
     ),
     titleLarge: TextStyle(
       fontFamily: 'Almendra',
-      color: CustomColors.darkGrey,
+      color: CustomColors.mediumGrey,
     ),
     titleMedium: TextStyle(
       fontFamily: 'Almendra',
-      color: CustomColors.darkGrey,
+      color: CustomColors.mediumGrey,
     ),
     titleSmall: TextStyle(
+      fontFamily: 'Almendra',
+      color: CustomColors.mediumGrey,
+    ),
+    labelLarge: TextStyle(
+      fontFamily: 'Almendra',
+      color: CustomColors.darkGrey,
+    ),
+    labelMedium: TextStyle(
+      fontFamily: 'Almendra',
+      color: CustomColors.darkGrey,
+    ),
+    labelSmall: TextStyle(
       fontFamily: 'Almendra',
       color: CustomColors.darkGrey,
     ),
@@ -79,13 +91,25 @@ class CustomTextTheme {
     ),
     titleLarge: TextStyle(
       fontFamily: 'Almendra',
-      color: CustomColors.lightGrey,
+      color: CustomColors.mediumGrey,
     ),
     titleMedium: TextStyle(
       fontFamily: 'Almendra',
-      color: CustomColors.lightGrey,
+      color: CustomColors.mediumGrey,
     ),
     titleSmall: TextStyle(
+      fontFamily: 'Almendra',
+      color: CustomColors.mediumGrey,
+    ),
+    labelLarge: TextStyle(
+      fontFamily: 'Almendra',
+      color: CustomColors.lightGrey,
+    ),
+    labelMedium: TextStyle(
+      fontFamily: 'Almendra',
+      color: CustomColors.lightGrey,
+    ),
+    labelSmall: TextStyle(
       fontFamily: 'Almendra',
       color: CustomColors.lightGrey,
     ),

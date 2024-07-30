@@ -38,4 +38,18 @@ class DatabaseService {
       rethrow;
     }
   }
+
+  Future<List<OwlUser>> getOwlUsers() async {
+    try {
+      final querySnapshot = (await _usersCollection.get()).docs;
+      if (querySnapshot.isEmpty) {
+        return [];
+      } else {
+        final owlUsers = querySnapshot.map((doc) => doc.data()).toList();
+        return owlUsers;
+      }
+    } catch (_) {
+      rethrow;
+    }
+  }
 }
