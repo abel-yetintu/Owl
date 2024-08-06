@@ -28,10 +28,12 @@ class UserTile extends StatelessWidget {
                   Text(
                     owlUser.fullName,
                     style: const TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     owlUser.userName,
                     style: Theme.of(context).textTheme.titleSmall,
+                    overflow: TextOverflow.ellipsis,
                   )
                 ],
               ),

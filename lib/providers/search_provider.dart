@@ -21,6 +21,7 @@ class SearchProvider extends ChangeNotifier {
     try {
       _owlUsers = (await _db.getOwlUsers()).where((owlUser) => owlUser.userName.contains(userName)).toList();
     } catch (_) {
+      _owlUsers = [];
       _error = "Ooops.. Something went wrong!";
     } finally {
       _loading = false;

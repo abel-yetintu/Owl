@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:owl/theme/color_schemes.dart';
 import 'package:owl/theme/custom_themes/app_bar_theme.dart';
 import 'package:owl/theme/custom_themes/filled_button_theme.dart';
+import 'package:owl/theme/custom_themes/icon_theme.dart';
 import 'package:owl/theme/custom_themes/input_decoration_theme.dart';
 import 'package:owl/theme/custom_themes/outline_button_theme.dart';
 import 'package:owl/theme/custom_themes/text_theme.dart';
@@ -19,6 +20,7 @@ class AppTheme {
     filledButtonTheme: CustomFilledButtonTheme.lightFilledButtonTheme,
     outlinedButtonTheme: CustomOutlinebuttonTheme.lightOutlineButtonTheme,
     appBarTheme: CustomAppBarTheme.lightAppBarTheme,
+    iconTheme: CustomIconTheme.lightIconTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -30,5 +32,6 @@ class AppTheme {
     filledButtonTheme: CustomFilledButtonTheme.darkFilledButtonTheme,
     outlinedButtonTheme: CustomOutlinebuttonTheme.darkOutlineButtonTheme,
     appBarTheme: CustomAppBarTheme.darkAppBarTheme,
+    iconTheme: CustomIconTheme.darkIconTheme,
   );
 }

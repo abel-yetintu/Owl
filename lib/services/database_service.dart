@@ -1,15 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:owl/models/conversation.dart';
+import 'package:owl/models/message.dart';
 import 'package:owl/models/owl_user.dart';
 
 class DatabaseService {
   final FirebaseFirestore _database = FirebaseFirestore.instance;
 
   late final CollectionReference<OwlUser> _usersCollection;
+  late final CollectionReference<Conversation> _conversationsCollection;
 
   DatabaseService() {
     _usersCollection = _database.collection('users').withConverter<OwlUser>(
           toFirestore: (value, _) => value.toMap(),
           fromFirestore: (snapshot, _) => OwlUser.fromMap(snapshot.data()!),
+        );
+    _conversationsCollection = _database.collection('conversations').withConverter<Conversation>(
+          toFirestore: (value, _) => value.toMap(),
+          fromFirestore: (snapshot, _) => Conversation.fromMap(snapshot.data()!),
         );
   }
 
@@ -49,6 +56,64 @@ class DatabaseService {
         return owlUsers;
       }
     } catch (_) {
+      rethrow;
+    }
+  }
+
+  Stream<QuerySnapshot<Conversation>> getConversations({required String uid}) {
+    return _conversationsCollection
+        .where('participantsUid', arrayContains: uid)
+        .orderBy('lastMessage.timeStamp', descending: true)
+        .snapshots();
+  }
+
+  Future<void> sendMessage(
+      {required OwlUser currentUser, required OwlUser otherUser, required Message message, required String docId}) async {
+    try {
+      var conversation = Conversation(
+        documentId: docId,
+        lastMessage: message,
+        participantsUid: [currentUser.uid, otherUser.uid],
+        participants: [currentUser, otherUser],
+      );
+      await _database.runTransaction((Transaction transaction) async {
+        var conversationRef = _conversationsCollection.doc(docId);
+        var messageRef = _conversationsCollection.doc(docId).collection('messages').doc(message.id);
+
+        transaction.set(conversationRef, conversation);
+        transaction.set(messageRef, message.toMap());
+      });
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getMessages({required String docId}) {
+    return _conversationsCollection.doc(docId).collection('messages').snapshots();
+  }
+
+  Future<void> markMessageAsRead({required Message message, required String docId}) async {
+    try {
+      await _database.runTransaction((Transaction transaction) async {
+        var conversationRef = _conversationsCollection.doc(docId);
+        var messageRef = _conversationsCollection.doc(docId).collection('messages').doc(message.id);
+
+        var convo = (await transaction.get(conversationRef)).data()!;
+        transaction.set(
+          messageRef,
+          <String, dynamic>{'read': true},
+          SetOptions(merge: true),
+        );
+        if (convo.lastMessage.id == message.id) {
+          transaction.set(
+            conversationRef,
+            convo.copyWith(lastMessage: message.copyWith(read: true)),
+            SetOptions(merge: true),
+          );
+        }
+      });
+    } catch (e) {
+      print('MarkAsRead: ${e.toString()}');
       rethrow;
     }
   }

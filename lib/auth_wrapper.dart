@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:owl/providers/auth_provider.dart';
+import 'package:owl/providers/conversation_provider.dart';
 import 'package:owl/providers/search_provider.dart';
 import 'package:owl/ui/pages/auth/login_page.dart';
 import 'package:owl/ui/pages/error_page.dart';
@@ -38,6 +39,8 @@ class AuthWrapper extends StatelessWidget {
                 return MultiProvider(
                   providers: [
                     ChangeNotifierProvider(create: (context) => SearchProvider()),
+                    ChangeNotifierProvider(create: (context) => ConversationProvider(uid: auth.owlUser!.uid)),
+                    
                   ],
                   child: const MainPage(),
                 );
@@ -56,6 +59,8 @@ class AuthWrapper extends StatelessWidget {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (context) => SearchProvider()),
+            ChangeNotifierProvider(create: (context) => ConversationProvider(uid: auth.owlUser!.uid)),
+            
           ],
           child: const MainPage(),
         );

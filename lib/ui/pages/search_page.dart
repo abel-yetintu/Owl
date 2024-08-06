@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:owl/models/owl_user.dart';
+import 'package:owl/providers/auth_provider.dart';
+import 'package:owl/providers/chat_provider.dart';
 import 'package:owl/providers/search_provider.dart';
+import 'package:owl/ui/pages/chat_page.dart';
 import 'package:owl/ui/widgets/shimmer_widget.dart';
 import 'package:owl/ui/widgets/user_tile.dart';
+import 'package:owl/utils/generate_id.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends StatelessWidget {
@@ -18,6 +22,9 @@ class SearchPage extends StatelessWidget {
       child: Column(
         children: [
           TextField(
+            onTapOutside: (event) {
+              FocusScope.of(context).unfocus();
+            },
             textInputAction: TextInputAction.search,
             decoration: const InputDecoration(
               hintText: 'Search',
@@ -74,12 +81,26 @@ class SearchPage extends StatelessWidget {
   }
 
   Widget _usersUi(BuildContext context, List<OwlUser> owlUsers) {
+    final currentUser = context.read<AuthProvider>().owlUser!;
     return ListView.builder(
       itemCount: owlUsers.length,
       itemBuilder: (context, index) {
         return UserTile(
           owlUser: owlUsers[index],
-          onTap: () {},
+          onTap: () {
+            if (currentUser.uid == owlUsers[index].uid) {
+              return;
+            }
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return ChangeNotifierProvider<ChatProvider>(
+                create: (context) => ChatProvider(docId: generateDocumentId(uid1: currentUser.uid, uid2: owlUsers[index].uid)),
+                child: ChatPage(
+                    currentUser: currentUser,
+                    otherUser: owlUsers[index],
+                    convoId: generateDocumentId(uid1: currentUser.uid, uid2: owlUsers[index].uid)),
+              );
+            }));
+          },
         );
       },
     );
