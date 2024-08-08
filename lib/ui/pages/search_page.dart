@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:owl/models/owl_user.dart';
-import 'package:owl/providers/auth_provider.dart';
 import 'package:owl/providers/chat_provider.dart';
+import 'package:owl/providers/owl_user_provider.dart';
 import 'package:owl/providers/search_provider.dart';
+import 'package:owl/providers/selected_tab_provider.dart';
 import 'package:owl/ui/pages/chat_page.dart';
 import 'package:owl/ui/widgets/shimmer_widget.dart';
 import 'package:owl/ui/widgets/user_tile.dart';
@@ -81,7 +82,7 @@ class SearchPage extends StatelessWidget {
   }
 
   Widget _usersUi(BuildContext context, List<OwlUser> owlUsers) {
-    final currentUser = context.read<AuthProvider>().owlUser!;
+    final currentUser = context.read<OwlUserProvider>().owlUser!;
     return ListView.builder(
       itemCount: owlUsers.length,
       itemBuilder: (context, index) {
@@ -89,6 +90,7 @@ class SearchPage extends StatelessWidget {
           owlUser: owlUsers[index],
           onTap: () {
             if (currentUser.uid == owlUsers[index].uid) {
+              context.read<SelectedTabProvider>().selectTab(tab: 2);
               return;
             }
             Navigator.push(context, MaterialPageRoute(builder: (context) {

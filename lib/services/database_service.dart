@@ -28,13 +28,8 @@ class DatabaseService {
     }
   }
 
-  Future<OwlUser> getOwlUser({required String uid}) async {
-    try {
-      final owlUser = (await _usersCollection.doc(uid).get()).data()!;
-      return owlUser;
-    } catch (_) {
-      rethrow;
-    }
+  Stream<OwlUser?> getOwlUser({required String uid}) {
+    return _usersCollection.doc(uid).snapshots().map((doc) => doc.data());
   }
 
   Future<bool> isUserNameAvailable({required String userName}) async {
@@ -114,6 +109,29 @@ class DatabaseService {
       });
     } catch (e) {
       print('MarkAsRead: ${e.toString()}');
+      rethrow;
+    }
+  }
+
+  Future<void> updateUser({required OwlUser owlUser}) async {
+    try {
+      await _database.runTransaction((Transaction transaction) async {
+        var userReference = _usersCollection.doc(owlUser.uid);
+        transaction.update(userReference, owlUser.toMap());
+
+        var docs = (await _conversationsCollection.where('participantsUid', arrayContains: owlUser.uid).get()).docs;
+        var conversations = docs.map((doc) => doc.data()).toList();
+        var updatedConversations = conversations.map((conversation) {
+          var otherUser = conversation.participants.singleWhere((user) => user.uid != owlUser.uid);
+          return conversation.copyWith(participants: [owlUser, otherUser]);
+        }).toList();
+
+        for (var conversation in updatedConversations) {
+          var documentReference = _conversationsCollection.doc(conversation.documentId);
+          transaction.update(documentReference, conversation.toMap());
+        }
+      });
+    } catch (e) {
       rethrow;
     }
   }

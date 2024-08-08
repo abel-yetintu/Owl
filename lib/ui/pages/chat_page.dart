@@ -44,7 +44,10 @@ class _ChatPageState extends State<ChatPage> {
                   Padding(
                     padding: EdgeInsets.only(left: 16.w),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Theme.of(context).colorScheme.onTertiary,
+                      ),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -62,7 +65,10 @@ class _ChatPageState extends State<ChatPage> {
                   Expanded(
                     child: Text(
                       widget.otherUser.fullName,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onTertiary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

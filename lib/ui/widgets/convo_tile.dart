@@ -76,7 +76,16 @@ class ConvoTile extends StatelessWidget {
                               : Icon(
                                   Icons.check,
                                   size: 18.r,
-                                )
+                              ),
+                      if (convo.lastMessage.senderUid != currentUserUid && !convo.lastMessage.read)
+                        Icon(
+                          Icons.circle,
+                          size: 18.r,
+                          color: Theme.of(context).colorScheme.secondary,
+                        )
+                        
+
+
                     ],
                   )
                 ],

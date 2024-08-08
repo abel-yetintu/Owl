@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 class OwlUser {
@@ -33,4 +34,20 @@ class OwlUser {
   String toJson() => json.encode(toMap());
 
   factory OwlUser.fromJson(String source) => OwlUser.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  OwlUser copyWith({
+    String? uid,
+    String? email,
+    String? userName,
+    String? fullName,
+    String? profilePicture,
+  }) {
+    return OwlUser(
+      uid: uid ?? this.uid,
+      email: email ?? this.email,
+      userName: userName ?? this.userName,
+      fullName: fullName ?? this.fullName,
+      profilePicture: profilePicture ?? this.profilePicture,
+    );
+  }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:owl/providers/auth_provider.dart';
 import 'package:owl/providers/conversation_provider.dart';
+import 'package:owl/providers/owl_user_provider.dart';
 import 'package:owl/providers/search_provider.dart';
+import 'package:owl/providers/selected_tab_provider.dart';
+import 'package:owl/services/storage_service.dart';
 import 'package:owl/ui/pages/auth/login_page.dart';
 import 'package:owl/ui/pages/error_page.dart';
 import 'package:owl/ui/pages/loading_page.dart';
@@ -21,50 +24,35 @@ class AuthWrapper extends StatelessWidget {
     //   return const EmailVerificationPage();
     // }
     else {
-      if (auth.owlUser == null) {
-        return FutureBuilder(
-          future: auth.getOwlUser(uid: auth.user!.uid),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+      return ChangeNotifierProvider<OwlUserProvider>(
+        create: (context) => OwlUserProvider(uid: auth.user!.uid),
+        child: Consumer<OwlUserProvider>(
+          builder: (context, provider, child) {
+            if (provider.loading) {
               return const LoadingPage();
-            } else if (snapshot.hasError) {
-              return ErrorPage(
-                onPressed: () {
-                  auth.signOut();
-                },
-                buttonText: 'Go Back',
-              );
             } else {
-              if (snapshot.data!) {
-                return MultiProvider(
-                  providers: [
-                    ChangeNotifierProvider(create: (context) => SearchProvider()),
-                    ChangeNotifierProvider(create: (context) => ConversationProvider(uid: auth.owlUser!.uid)),
-                    
-                  ],
-                  child: const MainPage(),
-                );
-              } else {
+              if (provider.owlUser == null) {
                 return ErrorPage(
                   onPressed: () {
                     auth.signOut();
                   },
                   buttonText: 'Go Back',
                 );
+              } else {
+                return MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(create: (context) => SearchProvider()),
+                    ChangeNotifierProvider(create: (context) => ConversationProvider(uid: provider.owlUser!.uid)),
+                    ChangeNotifierProvider(create: (context) => SelectedTabProvider()),
+                    Provider<StorageService>(create: (context) => StorageService()),
+                  ],
+                  child: const MainPage(),
+                );
               }
             }
           },
-        );
-      } else {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => SearchProvider()),
-            ChangeNotifierProvider(create: (context) => ConversationProvider(uid: auth.owlUser!.uid)),
-            
-          ],
-          child: const MainPage(),
-        );
-      }
+        ),
+      );
     }
   }
 }

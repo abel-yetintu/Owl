@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:owl/providers/selected_tab_provider.dart';
 import 'package:owl/ui/pages/messages_page.dart';
 import 'package:owl/ui/pages/profile_page.dart';
 import 'package:owl/ui/pages/search_page.dart';
+import 'package:provider/provider.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends StatelessWidget {
+
+  final List<Widget> _pages = const [MessagesPage(), SearchPage(), ProfilePage()];
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  final List<Widget> _pages = const [MessagesPage(), SearchPage(), ProfilePage()];
-  int _selectedIndex = 0;
-
-  @override
   Widget build(BuildContext context) {
-
+    int selectedTab = context.watch<SelectedTabProvider>().selectedTab;
     return Scaffold(
-      body: SafeArea(child: _pages[_selectedIndex]),
+      body: SafeArea(child: _pages[selectedTab]),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         height: 80.h,
-        selectedIndex: _selectedIndex,
+        selectedIndex: selectedTab,
         onDestinationSelected: (value) {
-          setState(() {
-            _selectedIndex = value;
-          });
+          context.read<SelectedTabProvider>().selectTab(tab: value);
         },
         destinations: const [
           NavigationDestination(icon: Icon(Icons.message), label: 'Messages'),

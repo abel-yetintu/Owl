@@ -6,16 +6,22 @@ import 'package:owl/auth_wrapper.dart';
 import 'package:owl/firebase_options.dart';
 import 'package:owl/providers/auth_provider.dart';
 import 'package:owl/providers/theme_provider.dart';
+import 'package:owl/services/image_picker_service.dart';
 import 'package:owl/theme/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   await setUp();
+  var prefs = await SharedPreferences.getInstance();
   runApp(
     MultiProvider(
       providers: [
+        Provider<ImagePickerService>(
+          create: (context) => ImagePickerService(),
+        ),
         ChangeNotifierProvider<ThemeProvider>(
-          create: (context) => ThemeProvider(),
+          create: (context) => ThemeProvider(prefs: prefs),
         ),
         ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider(),

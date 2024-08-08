@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:owl/models/owl_user.dart';
@@ -8,8 +10,6 @@ import 'package:tuple/tuple.dart';
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
-  OwlUser? _owlUser;
-  OwlUser? get owlUser => _owlUser;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -21,22 +21,11 @@ class AuthProvider extends ChangeNotifier {
     _authService.authStateChanges.listen(_onAuthStateChanged);
   }
 
-  Future<void> _onAuthStateChanged(User? user) async {
+  void _onAuthStateChanged(User? user) {
     _user = user;
-    if (user == null) {
-      _owlUser = null;
-    }
     notifyListeners();
   }
 
-  Future<bool> getOwlUser({required String uid}) async {
-    try {
-      _owlUser = await DatabaseService().getOwlUser(uid: uid);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
 
   Future<bool> signInWithEmailAndPassword({required String email, required String password}) async {
     _loading = true;

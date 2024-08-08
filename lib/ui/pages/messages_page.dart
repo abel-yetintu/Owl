@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:owl/models/conversation.dart';
-import 'package:owl/providers/auth_provider.dart';
 import 'package:owl/providers/chat_provider.dart';
 import 'package:owl/providers/conversation_provider.dart';
+import 'package:owl/providers/owl_user_provider.dart';
 import 'package:owl/ui/pages/chat_page.dart';
 import 'package:owl/ui/widgets/convo_tile.dart';
 import 'package:owl/ui/widgets/shimmer_widget.dart';
@@ -14,25 +14,13 @@ class MessagesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserUid = context.read<AuthProvider>().owlUser!.uid;
+    final currentUserUid = context.read<OwlUserProvider>().owlUser!.uid;
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Messages', style: Theme.of(context).textTheme.headlineLarge),
-              IconButton(
-                icon: const Icon(Icons.exit_to_app
-                ),
-                onPressed: () {
-                  context.read<AuthProvider>().signOut();
-                },
-              ),
-            ],
-          ),
+          Text('Messages', style: Theme.of(context).textTheme.headlineLarge),
           SizedBox(height: 24.h),
           Consumer<ConversationProvider>(
             builder: (context, provider, child) {

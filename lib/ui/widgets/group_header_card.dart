@@ -20,7 +20,7 @@ class GroupHeaderCard extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
           child: Text(
             message.timeStamp.toDate().getFormattedDate(textMode: true),
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 14.sp),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 14.sp, color: Theme.of(context).colorScheme.onTertiary),
           ),
         ),
       ),

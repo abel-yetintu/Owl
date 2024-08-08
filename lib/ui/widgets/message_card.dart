@@ -33,13 +33,13 @@ class MessageCard extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.8),
           padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 message.message,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontSize: 14.sp,
-                      color: !isCurrentUser ? Theme.of(context).colorScheme.onSecondary : null,
+                      color: !isCurrentUser ? Theme.of(context).colorScheme.onSecondary : Theme.of(context).colorScheme.onPrimary,
                     ),
               ),
               Row(
@@ -48,7 +48,7 @@ class MessageCard extends StatelessWidget {
                   Text(
                     message.timeStamp.toDate().getTimeOnly(),
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: !isCurrentUser ? Theme.of(context).colorScheme.onSecondary : null,
+                          color: !isCurrentUser ? Theme.of(context).colorScheme.onSecondary : Theme.of(context).colorScheme.onPrimary,
                         ),
                   ),
                   if (message.senderUid == currentUserUid)
@@ -58,7 +58,7 @@ class MessageCard extends StatelessWidget {
                   if (message.senderUid == currentUserUid)
                     message.read
                         ? Icon(Icons.done_all_outlined, size: 18.r, color: Theme.of(context).colorScheme.secondary)
-                        : Icon(Icons.check, size: 18.r),
+                        : Icon(Icons.check, size: 18.r, color: Theme.of(context).colorScheme.onPrimary),
                 ],
               ),
             ],
