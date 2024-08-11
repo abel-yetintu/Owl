@@ -26,32 +26,32 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Column(
             children: [
-              Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () => showImagePickerBottomSheet(context),
-                    child: CircleAvatar(
+              GestureDetector(
+                onTap: () => showImagePickerBottomSheet(context),
+                child: Stack(
+                  children: [
+                    CircleAvatar(
                       radius: 60.r,
                       backgroundImage: owlUser.profilePicture == ""
                           ? const AssetImage('assets/images/empty_pp.jpg')
                           : NetworkImage(owlUser.profilePicture),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 4,
-                    child: ClipOval(
-                      child: Container(
-                        color: Theme.of(context).colorScheme.secondary,
-                        padding: EdgeInsets.all(6.r),
-                        child: Icon(
-                          Icons.edit,
-                          color: Theme.of(context).colorScheme.onSecondary,
+                    Positioned(
+                      bottom: 0,
+                      right: 4,
+                      child: ClipOval(
+                        child: Container(
+                          color: Theme.of(context).colorScheme.secondary,
+                          padding: EdgeInsets.all(6.r),
+                          child: Icon(
+                            Icons.edit,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
               SizedBox(height: 12.h),
               Text(
@@ -171,7 +171,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 pickImage(context: context, imageSource: ImageSource.camera);
                 Navigator.pop(context);
               },
-            )
+            ),
+            if (context.read<OwlUserProvider>().owlUser!.profilePicture != '')
+              ListTile(
+                leading: const Icon(Icons.delete),
+                title: const Text('Remove profile picture'),
+                onTap: removeProfilePicture,
+              ),
           ],
         );
       },
@@ -188,6 +194,18 @@ class _ProfilePageState extends State<ProfilePage> {
           Alert.showToast(context: context, text: 'Profile pictue updated.', icon: Icons.image);
         }
       }
+    } catch (_) {
+      Alert.showErrorToast(context: context, text: 'Error. Please try agian.');
+    }
+  }
+
+  Future<void> removeProfilePicture() async {
+    try {
+      var result = await context.read<StorageService>().removeProfilePicture(owlUser: context.read<OwlUserProvider>().owlUser!);
+      if (result) {
+        Alert.showToast(context: context, text: 'Profile pictue removed.', icon: Icons.delete);
+      }
+      Navigator.pop(context);
     } catch (_) {
       Alert.showErrorToast(context: context, text: 'Error. Please try agian.');
     }

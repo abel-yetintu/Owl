@@ -5,6 +5,7 @@ import 'package:owl/providers/owl_user_provider.dart';
 import 'package:owl/providers/search_provider.dart';
 import 'package:owl/providers/selected_tab_provider.dart';
 import 'package:owl/services/storage_service.dart';
+import 'package:owl/ui/pages/auth/email_verification_page.dart';
 import 'package:owl/ui/pages/auth/login_page.dart';
 import 'package:owl/ui/pages/error_page.dart';
 import 'package:owl/ui/pages/loading_page.dart';
@@ -20,9 +21,9 @@ class AuthWrapper extends StatelessWidget {
     if (auth.user == null) {
       return const LoginPage();
     }
-    //  else if (!auth.user!.emailVerified) {
-    //   return const EmailVerificationPage();
-    // }
+     else if (!auth.user!.emailVerified) {
+      return const EmailVerificationPage();
+    }
     else {
       return ChangeNotifierProvider<OwlUserProvider>(
         create: (context) => OwlUserProvider(uid: auth.user!.uid),

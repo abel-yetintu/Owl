@@ -25,6 +25,7 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.3.1
   shimmer: ^3.0.0
+  smooth_page_indicator: ^1.2.0+3
   tuple: ^2.0.2
   uuid: ^4.4.2
 

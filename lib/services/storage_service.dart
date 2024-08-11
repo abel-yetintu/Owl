@@ -19,12 +19,28 @@ class StorageService {
       if (fileExtension.isEmpty) {
         return false;
       }
-      Reference refrenceImageToUpload = _refrenceDirProfilePictures.child('${owlUser.uid}_pp.$fileExtension');
+      Reference refrenceImageToUpload = _refrenceDirProfilePictures.child('${owlUser.uid}_pp');
       await refrenceImageToUpload.putFile(file);
       var downloadUrl = await refrenceImageToUpload.getDownloadURL();
       var updatedUser = owlUser.copyWith(profilePicture: downloadUrl);
       DatabaseService().updateUser(owlUser: updatedUser);
       return true;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<bool> removeProfilePicture({required OwlUser owlUser}) async {
+    try {
+      if (owlUser.profilePicture == '') {
+        return true;
+      } else {
+        var updatedUser = owlUser.copyWith(profilePicture: '');
+        DatabaseService().updateUser(owlUser: updatedUser);
+        var refrenceImageToDelete = _refrenceDirProfilePictures.child('${owlUser.uid}_pp');
+        await refrenceImageToDelete.delete();
+        return true;
+      }
     } catch (_) {
       rethrow;
     }

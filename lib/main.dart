@@ -8,6 +8,7 @@ import 'package:owl/providers/auth_provider.dart';
 import 'package:owl/providers/theme_provider.dart';
 import 'package:owl/services/image_picker_service.dart';
 import 'package:owl/theme/theme.dart';
+import 'package:owl/ui/pages/onboarding/onboarding_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,11 +18,14 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        Provider<SharedPreferences>(
+          create: (context) => prefs,
+        ),
         Provider<ImagePickerService>(
           create: (context) => ImagePickerService(),
         ),
         ChangeNotifierProvider<ThemeProvider>(
-          create: (context) => ThemeProvider(prefs: prefs),
+          create: (context) => ThemeProvider(prefs: context.read<SharedPreferences>()),
         ),
         ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider(),
@@ -43,7 +47,9 @@ class Owl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = context.read<ThemeProvider>();
+    final prefs = context.read<SharedPreferences>();
+    final showOnboardingPage = prefs.getBool('showOnboardingPage') ?? true;
 
     return ScreenUtilInit(
       designSize: const Size(360, 760),
@@ -55,7 +61,7 @@ class Owl extends StatelessWidget {
           themeMode: themeProvider.themeMode,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          home: const AuthWrapper(),
+          home: showOnboardingPage ? const OnboardingPage() : const AuthWrapper(),
         );
       },
     );
